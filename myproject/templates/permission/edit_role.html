@@ -1,5 +1,4 @@
 {% extends 'layout.html' %}
-{% load customeTags %}
 
 {% block body %}
 
@@ -29,7 +28,7 @@
 <nav aria-label="breadcrumb" class="pt-1">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Remove roles</li>
+    <li class="breadcrumb-item active" aria-current="page">Edit roles</li>
   </ol>
 </nav>
 
@@ -57,7 +56,7 @@
   </div> -->
 </form>
 
-<form class="row">
+<form class="row" id="form-table">
   <div class="col">
     <p class="h6 mt-3"><b>Manage Roles</b></p>
 
@@ -81,24 +80,16 @@
             <ul class="list-unstyled">
               {% for permission in role.permissions.all %}
               <li>
-                {{ permission.name }}
-                {% if 'remove_permission'|is_in:request.session.permissions %}
-                <button class="btn btn-sm btn-link remove-permission-btn" data-role-name="{{role.name}}"
+                <p class="m-0 p-0">{{ permission.name }}</p>
+                <!-- <button class="btn btn-sm btn-link remove-permission-btn" data-role-name="{{role.name}}"
                   data-role-id="{{ role.pk }}" data-permission-name="{{permission.name}}"
-                  data-permission-id="{{ permission.pk }}">Remove</button>
-                {% else %}
-                <p class="text-danger d-inline">Not permitted to remove</p>
-                {% endif %}
+                  data-permission-id="{{ permission.pk }}">Remove</button> -->
               </li>
               {% endfor %}
             </ul>
           </td>
           <td>
-            {% if 'remove_role'|is_in:request.session.permissions %}
-            <button class="btn btn-sm btn-link remove-role-btn" data-role-id="{{role.pk}}">Remove Role</button>
-            {% else %}
-            <p class="text-danger d-inline">Not permitted to remove</p>
-            {% endif %}
+            <a href="{% url 'edit_role_id' role.id %}" class="btn btn-sm btn-link edit-role-btn">Edit Role</a>
           </td>
         </tr>
         {% endfor %}
@@ -147,10 +138,10 @@
         $.ajax({
           url: `/api/roles/remove/${roleId}/`,
           type: 'POST',
-          headers: { 'X-CSRFToken': token },
+          headers: {'X-CSRFToken': token},
           success: function (response) {
             alert('Role removed successfully!');
-            row.remove();
+            row.remove(); 
           },
           error: function (error) {
             alert('Failed to remove the role. Please try again.');

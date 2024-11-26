@@ -33,6 +33,13 @@ urlpatterns = [
     path('roles/edit_role',views.edit_role ,name="edit_role"),
     path('roles/edit_role/<int:pk>/',views.edit_role_id ,name="edit_role_id"),
 
+    # Permissions
+    path('permissions/',views.permission_management ,name="permission_management"),
+    path('permissions/<int:pk>',views.detail_role ,name="detail_permission"),
+    path('permissions/add_permission',views.add_permission ,name="add_permission"),
+    path('permissions/edit_permission',views.edit_permission ,name="edit_permission"),
+    path('permissions/remove_permission',views.remove_permission ,name="remove_permission"),
+
     # APIs
     path('api/roles/remove/<int:role_id>/',viewApi.api_remove_role ,name="api_remove_role"),
     path('api/roles/remove/<int:role_id>/<int:permission_id>/',viewApi.api_remove_role_permission ,name="api_remove_role_permission"),

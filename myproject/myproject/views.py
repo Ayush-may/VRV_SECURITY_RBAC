@@ -59,12 +59,16 @@ def login(request):
         request.session['first_name'] = user.first_name
         request.session['username'] = user.username
         request.session['role'] = user_role.lower()
+        request.session['permissions'] = [permissions.name for permissions in user.roles.permissions.all()]
+
         return redirect("home")
       
       elif user_role.lower() == 'role' and role ==  'role':
         request.session['first_name'] = user.first_name
         request.session['username'] = user.username
-        request.session['role'] = user_role.lower().strip()
+        request.session['role'] = user_role.lower()
+        request.session['permissions'] = ','.join(permission.name for permission in user.roles.permissions.all())
+        
         return redirect("role_management")
       
       elif user_role.lower() == 'user' and role is 'user':
@@ -172,6 +176,19 @@ def detail_role(request,pk):
   }
 
   return render(request,"role/detail_role.html",data)
+
+def permission_management(request):
+  return render(request, 'permission/permission.html')
+  
+def detail_permission(request):
+  return render(request, 'permission/detail_permission.html')
+
+def add_permission(request):
+  return render(request, 'permission/add_permission.html')
+def edit_permission(request):
+  return render(request, 'permission/edit_permission.html')
+def remove_permission(request):
+  return render(request, 'permission/remove_permission.html')
 
 def logout(request):
   request.session.flush()

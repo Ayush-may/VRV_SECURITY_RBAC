@@ -1,4 +1,5 @@
 {% load static %}
+{% load customeTags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -76,7 +77,7 @@
       </p>
       <div class="ms-auto">
         <a href="{% url 'logout' %}" class="btn btn-warning btn-sm ms-auto">logout</a>
-        <button class="btn btn-primary btn-sm" id="menu-sm-btn">
+        <button class="btn btn-primary btn-sm d-block d-md-none" id="menu-sm-btn">
           <i class="bi bi-caret-right"></i>
         </button>
       </div>
@@ -178,11 +179,11 @@
   <div class="fle-grow-1 h-100 layout">
     <div class="container mx-auto h-100 p-0 m-0">
       <div class="row h-100 m-0 p-0 shadow">
-        <div class="col-2 d-none d-md-block bg-white bg-gradient sidebar">
+        <div class="col-auto d-none d-md-block text-bg-dark bg-gradient sidebar">
           <ul class="m-0 p-0">
             <ul class="m-0 p-0">
               {% if request.session.role %}
-              {% if request.session.role == 'admin' %}
+              {% if request.session.role|is_in:"admin" %}
               <!-- Admin Menu -->
               <li>
                 <p class="m-0 p-0" id="dropdown" style="cursor: pointer;">Dashboard</p>
@@ -193,74 +194,92 @@
                   </li>
                 </ul>
               </li>
-              <li>
-                <p class="m-0 p-0" id="dropdown" style="cursor: pointer;">Role Management</p>
-                <ul class="m-0 ms-3 p-0">
-                  <li>
-                    <a href="{% url 'role_management' %}"
-                      class="{% if request.resolver_match.url_name == 'role_management' %}text-danger{% endif %}">View
-                      Role</a>
-                  </li>
-                  <li>
-                    <a href="{% url 'add_role' %}"
-                      class="{% if request.resolver_match.url_name == 'add_role' %}text-danger{% endif %}">Add Role</a>
-                  </li>
-                  <li>
-                    <a href="{% url 'remove_role' %}"
-                      class="{% if request.resolver_match.url_name == 'remove_role' %}text-danger{% endif %}">Remove
-                      Role</a>
-                  </li>
-                  <li>
-                    <a href="{% url 'edit_role' %}"
-                      class="{% if request.resolver_match.url_name == 'edit_role' %}text-danger{% endif %}">Edit
-                      Role</a>
-                  </li>
-                  <li>
-                    <a href="#"
-                      class="{% if request.resolver_match.url_name == 'view_permissions' %}text-danger{% endif %}">View
-                      Permissions</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <p class="m-0 p-0" id="dropdown" style="cursor: pointer;">User Management</p>
-                <ul class="m-0 ms-3 p-0">
-                  <li>
-                    <a href="#"
-                      class="{% if request.resolver_match.url_name == 'user_details' %}text-danger{% endif %}">Details</a>
-                  </li>
-                </ul>
-              </li>
-              {% elif request.session.role == 'role' %}
+              {% endif %}
+              {% if request.session.role|is_in:"admin,role" %}
               <!-- Role Menu -->
               <li>
                 <p class="m-0 p-0" id="dropdown" style="cursor: pointer;">Role Management</p>
                 <ul class="m-0 ms-3 p-0">
+                  {% if 'view_role'|is_in:request.session.permissions %}
                   <li>
                     <a href="{% url 'role_management' %}"
                       class="{% if request.resolver_match.url_name == 'role_management' %}text-danger{% endif %}">View
                       Role</a>
                   </li>
+                  {% endif %}
+                  {% if 'add_role'|is_in:request.session.permissions %}
                   <li>
                     <a href="{% url 'add_role' %}"
                       class="{% if request.resolver_match.url_name == 'add_role' %}text-danger{% endif %}">Add Role</a>
                   </li>
+                  {% endif %}
+                  {% if 'remove_role'|is_in:request.session.permissions %}
                   <li>
                     <a href="{% url 'remove_role' %}"
                       class="{% if request.resolver_match.url_name == 'remove_role' %}text-danger{% endif %}">Remove
                       Role</a>
                   </li>
+                  {% endif %}
                 </ul>
               </li>
-              {% elif request.session.role == 'user' %}
+              {% endif %}
+              {% if request.session.role|is_in:"admin,permission" %}
+              <li>
+                <p class="m-0 p-0" id="dropdown" style="cursor: pointer;">Permissions Management</p>
+                <ul class="m-0 ms-3 p-0">
+                  {% if 'view_permission'|is_in:request.session.permissions %}
+                  <li>
+                    <a href="{% url 'permission_management' %}"
+                    class="{% if request.resolver_match.url_name == 'permission_management' %}text-danger{% endif %}">View
+                    Permissions</a>
+                  </li>
+                  {% endif %}
+                  {% if 'add_permission'|is_in:request.session.permissions %}
+                  <li>
+                    <a href="{% url 'add_permission' %}"
+                    class="{% if request.resolver_match.url_name == 'add_permission' %}text-danger{% endif %}">Add Permission</a>
+                  </li>
+                  {% endif %}
+                  {% if 'remove_permission'|is_in:request.session.permissions %}
+                  <li>
+                    <a href="{% url 'remove_permission' %}"
+                    class="{% if request.resolver_match.url_name == 'remove_permission' %}text-danger{% endif %}">Remove
+                    Permission</a>
+                  </li>
+                  {% endif %}
+                  {% if 'edit_permission'|is_in:request.session.permissions %}
+                  <li>
+                    <a href="{% url 'edit_role' %}"
+                    class="{% if request.resolver_match.url_name == 'edit_role' %}text-danger{% endif %}">Edit
+                    Role</a>
+                  </li>
+                  {% endif %}
+                </ul>
+              </li>
+              {% endif %}
+              {% if request.session.role|is_in:"admin,user" %}
               <!-- User Menu -->
               <li>
                 <p class="m-0 p-0" id="dropdown" style="cursor: pointer;">User Dashboard</p>
                 <ul class="m-0 ms-3 p-0">
+                  {% if 'view_user'|is_in:request.session.permissions %}
                   <li>
                     <a href="#"
-                      class="{% if request.resolver_match.url_name == 'user_details' %}text-danger{% endif %}">Details</a>
+                    class="{% if request.resolver_match.url_name == 'user_details' %}text-danger{% endif %}">View Users</a>
                   </li>
+                  {% endif %}
+                  {% if 'add_user'|is_in:request.session.permissions %}
+                  <li>
+                    <a href="#"
+                    class="{% if request.resolver_match.url_name == 'user_details' %}text-danger{% endif %}">Add User</a>
+                  </li>
+                  {% endif %}
+                  {% if 'edit_user'|is_in:request.session.permissions %}
+                  <li>
+                    <a href="#"
+                    class="{% if request.resolver_match.url_name == 'user_details' %}text-danger{% endif %}">Edit User</a>
+                  </li>
+                  {% endif %}
                 </ul>
               </li>
               {% endif %}
